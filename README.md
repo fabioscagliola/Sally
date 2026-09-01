@@ -1,4 +1,4 @@
-![android-chrome-192x192.png](assets/favicon_io/android-chrome-192x192.png)
+![Sally](assets/favicon_io/android-chrome-192x192.png)
 
 # Sally
 
@@ -25,4 +25,10 @@ My favorite passage is when the elderly, wise Mr. Harridge insists that Jake rem
 > “So they say. So they say. Just the same, you’re sitting right behind the wheel in case anything goes wrong.”
 
 That is the spirit guiding this project. Leverage AI, but always keep human hands on the steering wheel.
+
+## Lifecycle
+
+Sally supports the journey from backlog item to pull request through a lifecycle with three AI-augmented stages.
+
+See [Lifecycle](docs/lifecycle.md) for more info.
 
