@@ -32,7 +32,8 @@ Its purpose is to investigate how the requested change should be implemented in 
 
 9. Produce the implementation plan using `templates/implementation-plan.md`.
 
-10. Write the implementation plan as a Markdown file in the target repository.
+10. Write the implementation plan as a Markdown file in the target repository at the location defined in the [Artifacts](../docs/artifacts.md) document.
+
 
 ## Input
 

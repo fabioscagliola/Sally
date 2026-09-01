@@ -32,3 +32,7 @@ Sally supports the journey from backlog item to pull request through a lifecycle
 
 See [Lifecycle](docs/lifecycle.md) for more info.
 
+## Documentation
+
+- [Refine a GitHub backlog item](docs/github/refiner.md)
+

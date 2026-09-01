@@ -29,7 +29,7 @@ Its purpose is to improve the clarity and completeness of the backlog item, iden
 
 8. Produce the refined backlog item using `templates/refined-backlog-item.md`.
 
-9. Write the refined backlog item as a Markdown file in the target repository.
+9. Write the refined backlog item as a Markdown file in the target repository at the location defined in the [Artifacts](../docs/artifacts.md) document.
 
 ## Input
 
