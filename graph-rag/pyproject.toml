@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sally-graph-rag"
+version = "0.1.0"
+description = "Disposable Graph RAG foundation for Sally"
+requires-python = ">=3.9"
+dependencies = ["neo4j>=5.0,<7"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[project.scripts]
+graph-rag-cli = "graph_rag.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: tests requiring the Docker Compose Neo4j instance",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

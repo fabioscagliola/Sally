@@ -62,5 +62,6 @@ See [Lifecycle](docs/lifecycle.md) for more info.
 
 ## Documentation
 
-- [Refine a GitHub backlog item](docs/github/refiner.md)
+- [GitHub quickstart guide](docs/github-quickstart-guide.md)
+- [Sally Graph RAG](graph-rag/README.md)
 
