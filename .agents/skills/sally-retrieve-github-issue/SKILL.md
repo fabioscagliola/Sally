@@ -1,5 +1,5 @@
 ---
-name: retrieve-github-issue
+name: sally-retrieve-github-issue
 description: Retrieve a GitHub issue to use as a backlog item. Use when an agent needs to read the original backlog item from a GitHub repository.
 ---
 

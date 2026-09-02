@@ -30,7 +30,7 @@ In GitHub Copilot, verify that the following custom agents are available.
 
 And verify that the following custom skills are available.
 
-- retrieve-github-issue
+- sally-retrieve-github-issue
 
 ## Run the Refiner
 
