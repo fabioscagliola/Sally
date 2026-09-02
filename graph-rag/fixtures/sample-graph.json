@@ -1,0 +1,38 @@
+{
+  "format": "sally-graph-rag",
+  "version": 1,
+  "nodes": [
+    {
+      "source_id": "graph-rag/src/graph_rag/cli.py:main",
+      "type": "Function",
+      "properties": {
+        "name": "main"
+      },
+      "location": {
+        "source_uri": "graph-rag/src/graph_rag/cli.py",
+        "start_line": 34,
+        "start_column": 1
+      }
+    },
+    {
+      "source_id": "graph-rag/src/graph_rag/writer.py:Neo4jWriter.rebuild",
+      "type": "Method",
+      "properties": {
+        "name": "rebuild"
+      },
+      "location": {
+        "source_uri": "graph-rag/src/graph_rag/writer.py",
+        "start_line": 17,
+        "start_column": 5
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "graph-rag/src/graph_rag/cli.py:main",
+      "target_id": "graph-rag/src/graph_rag/writer.py:Neo4jWriter.rebuild",
+      "type": "CALLS",
+      "properties": {}
+    }
+  ]
+}
