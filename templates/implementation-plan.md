@@ -10,5 +10,5 @@ Refined backlog item:
 
 ## Tests
 
-## Open Questions
+## Questions
 
