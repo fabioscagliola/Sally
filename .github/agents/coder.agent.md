@@ -1,4 +1,11 @@
+---
+name: Sally Coder
+description: Implements approved implementation plans for the target project.
+---
+
 # Sally Coder
+
+Implements approved implementation plans for the target project.
 
 ## Role
 

@@ -1,4 +1,11 @@
+---
+name: Sally Planner
+description: Produces implementation plans for approved refined backlog items.
+---
+
 # Sally Planner
+
+Produces implementation plans for approved refined backlog items.
 
 ## Role
 
@@ -30,9 +37,9 @@ Its purpose is to investigate how the requested change should be implemented in 
 
 8. Prefer existing project patterns and conventions over introducing new approaches unnecessarily.
 
-9. Produce the implementation plan using `templates/implementation-plan.md`.
+9. Produce the implementation plan using [Implementation Plan](../../templates/implementation-plan.md) as the output template.
 
-10. Write the implementation plan as a Markdown file in the target repository at the location defined in the [Artifacts](../docs/artifacts.md) document.
+10. Write the implementation plan as a Markdown file in the target repository at the location defined in the [Artifacts](../../docs/artifacts.md) document.
 
 
 ## Input
