@@ -58,6 +58,8 @@ That is the spirit guiding this project. Leverage AI, but always keep human hand
 
 Sally supports the journey from backlog item to pull request through a lifecycle with three AI-augmented stages.
 
+![Lifecycle](/assets/lifecycle.jpg)
+
 See [Lifecycle](docs/lifecycle.md) for more info.
 
 ## Documentation
