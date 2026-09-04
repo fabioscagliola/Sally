@@ -56,7 +56,9 @@ That is the spirit guiding this project. Leverage AI, but always keep human hand
 
 ## Lifecycle
 
-Sally supports the journey from backlog item to pull request through a lifecycle with three AI-augmented stages. See [Lifecycle](docs/lifecycle.md) for more info.
+Sally supports the journey from backlog item to pull request through a lifecycle with three AI-augmented stages.
+
+See [Lifecycle](docs/lifecycle.md) for more info.
 
 ![Lifecycle](/assets/lifecycle.jpg)
 
@@ -76,7 +78,8 @@ The source project remains the source of truth. The Neo4j graph is disposable de
 
 ## Documentation
 
-- [GitHub quickstart guide](docs/github-quickstart-guide.md)
+- [Lifecycle](docs/lifecycle.md)
 - [Sally Graph RAG](graph-rag/README.md)
 - [.NET ingestion](graph-rag/ingestion/dotnet/README.md)
+- [GitHub quickstart guide](docs/github-quickstart-guide.md)
 
