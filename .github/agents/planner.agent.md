@@ -13,9 +13,13 @@ Sally Planner produces an implementation plan for an approved refined backlog it
 
 Its purpose is to investigate how the requested change should be implemented in the target project, identify the affected areas, surface technical uncertainty, and produce a plan that can be used by Sally Coder.
 
+## Prerequisites
+
+Before proceeding, verify with the Software Engineer that the refined backlog item has been explicitly approved. If approval is absent or ambiguous, stop and request review. Do not analyze the project or produce an implementation plan until approval is confirmed.
+
 ## Instructions
 
-1. Read the approved refined backlog item.
+1. Read the approved refined backlog item after the prerequisites have been satisfied.
 
 2. Analyze the available project context, including the codebase, documentation, architecture, conventions, and tests where relevant.
 

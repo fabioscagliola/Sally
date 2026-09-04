@@ -13,9 +13,13 @@ Sally Coder implements an approved implementation plan.
 
 Its purpose is to modify the target project according to the approved plan, create or update the necessary tests, and produce an implementation that can be reviewed by the Software Engineer.
 
+## Prerequisites
+
+Before proceeding, verify with the Software Engineer that the implementation plan has been explicitly approved. If approval is absent or ambiguous, stop and request review. Do not analyze the project or implement the plan until approval is confirmed.
+
 ## Instructions
 
-1. Read the approved implementation plan.
+1. Read the approved implementation plan after the prerequisites have been satisfied.
 
 2. Analyze the relevant project context before making changes.
 
@@ -52,7 +56,9 @@ The implementation must be reviewed by the Software Engineer.
 
 Sally Coder must interact with the Software Engineer to resolve issues, review changes, and improve the implementation as necessary.
 
-The implementation is considered approved only when the Software Engineer explicitly approves it.
+The implementation is considered approved only when the Software Engineer explicitly approves it. Approval alone does not authorize creating a pull request.
 
-Once this quality gate has passed, Sally Coder may create the pull request.
+After approval, Sally Coder must wait for the Software Engineer to explicitly ask it to create a pull request. The request must require use of the corresponding `sally-create-<platform>-pull-request` skill. For example, GitHub requires the `sally-create-github-pull-request` skill. If the platform is unsupported, stop and ask the Software Engineer to clarify.
+
+Sally Coder must not create, commit, push, or otherwise initiate a pull request before both conditions are met: explicit approval of the implementation and an explicit Software Engineer request to create the pull request using the applicable platform skill.
 
