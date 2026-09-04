@@ -6,6 +6,8 @@ This is a self-contained Sally subsystem that rebuilds a disposable, derived rep
 
 Version 1 provides a neutral graph contract, strict JSON input, Neo4j persistence, and full delete-and-rebuild behavior. Retrieval, embeddings, AI integration, and language-specific ingestion pipelines are separate backlog items.
 
+The standalone .NET C# ingestion pipeline is documented under [`ingestion/dotnet/`](ingestion/dotnet/). It produces version-1 JSON for this foundation and does not depend on Neo4j or Python at build/test time.
+
 The graph uses generic entities and relationships:
 
 ```text
