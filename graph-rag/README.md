@@ -8,10 +8,10 @@ Version 1 provides a neutral graph contract, strict JSON input, Neo4j persistenc
 
 The standalone .NET C# ingestion pipeline is documented under [`ingestion/dotnet/`](ingestion/dotnet/). It produces version-1 JSON for this foundation and does not depend on Neo4j or Python at build/test time.
 
-The graph uses generic entities and relationships:
+The graph uses generic entities and relationships. Neo4j persists every node with the common `Entity` label plus its semantic node label, and every relationship with its semantic relationship type:
 
 ```text
-(:Entity {type: "Method"})-[:RELATES_TO {type: "CALLS"}]->(:Entity {type: "Method"})
+(:Entity:Method {type: "Method"})-[:CALLS {type: "CALLS"}]->(:Entity:Method)
 ```
 
 Each entity has a stable `source_id`; source URI and source-location fields are optional.

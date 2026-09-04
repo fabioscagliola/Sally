@@ -35,8 +35,13 @@ def test_write_and_rebuild_are_deterministic(neo4j_driver):
 
     with neo4j_driver.session() as session:
         assert session.run("MATCH (entity:Entity) RETURN count(entity) AS count").single()["count"] == 2
-        assert session.run("MATCH ()-[edge:RELATES_TO]->() RETURN count(edge) AS count").single()["count"] == 1
+        assert session.run("MATCH (entity:Entity:Function) RETURN count(entity) AS count").single()["count"] == 1
+        assert session.run("MATCH (entity:Entity:Method) RETURN count(entity) AS count").single()["count"] == 1
+        assert session.run("MATCH ()-[edge:CALLS]->() RETURN count(edge) AS count").single()["count"] == 1
+        assert session.run("MATCH ()-[edge:RELATES_TO]->() RETURN count(edge) AS count").single()["count"] == 0
+        assert session.run("MATCH ()-[edge:CALLS {type: 'CALLS'}]->() RETURN count(edge) AS count").single()["count"] == 1
 
         stale = GraphDocument((GraphNode("stale", "File"),), ())
         writer.rebuild(stale)
         assert session.run("MATCH (entity:Entity) RETURN collect(entity.source_id) AS ids").single()["ids"] == ["stale"]
+        assert session.run("MATCH (entity:Entity:File) RETURN count(entity) AS count").single()["count"] == 1

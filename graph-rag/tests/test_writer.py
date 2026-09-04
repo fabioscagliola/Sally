@@ -50,6 +50,45 @@ def test_rebuild_deletes_then_writes_nodes_and_relationships():
     calls = driver.session_instance.transaction.calls
     assert "DETACH DELETE" in calls[0][0]
     assert "MERGE (entity:Entity" in calls[1][0]
+    assert "SET entity:$(node.type)" in calls[1][0]
     assert calls[1][1]["nodes"][0]["source_id"] == "a"
-    assert "MERGE (source)-[edge:RELATES_TO" in calls[2][0]
+    assert "MERGE (source)-[edge:$(relationship.type)" in calls[2][0]
     assert calls[2][1]["relationships"][0]["type"] == "CALLS"
+
+
+def test_rebuild_passes_arbitrary_semantic_types_without_changing_them():
+    driver = FakeDriver()
+    document = GraphDocument(
+        nodes=(GraphNode("a", "Domain Thing"), GraphNode("b", "Result/Value")),
+        relationships=(GraphRelationship("a", "b", "READS-VALUE"),),
+    )
+
+    Neo4jWriter(driver).rebuild(document)
+
+    calls = driver.session_instance.transaction.calls
+    assert calls[1][1]["nodes"] == [
+        {
+            "source_id": "a",
+            "type": "Domain Thing",
+            "source_uri": None,
+            "start_line": None,
+            "start_column": None,
+            "end_line": None,
+            "end_column": None,
+            "properties": {},
+        },
+        {
+            "source_id": "b",
+            "type": "Result/Value",
+            "source_uri": None,
+            "start_line": None,
+            "start_column": None,
+            "end_line": None,
+            "end_column": None,
+            "properties": {},
+        },
+    ]
+    assert calls[2][1]["relationships"] == [
+        {"source_id": "a", "target_id": "b", "type": "READS-VALUE", "properties": {}}
+    ]
+    assert "RELATES_TO" not in calls[2][0]
