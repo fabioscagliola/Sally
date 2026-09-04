@@ -1,5 +1,8 @@
+import pytest
+from neo4j.exceptions import ClientError
+
 from graph_rag.contract import GraphDocument, GraphNode, GraphRelationship
-from graph_rag.writer import Neo4jWriter
+from graph_rag.writer import Neo4jPersistenceError, Neo4jWriter
 
 
 class FakeResult:
@@ -8,17 +11,20 @@ class FakeResult:
 
 
 class FakeTransaction:
-    def __init__(self):
+    def __init__(self, rejected_type=None):
         self.calls = []
+        self.rejected_type = rejected_type
 
     def run(self, query, **parameters):
         self.calls.append((query, parameters))
+        if self.rejected_type is not None and parameters.get("semantic_type") == self.rejected_type:
+            raise ClientError("label rejected")
         return FakeResult()
 
 
 class FakeSession:
-    def __init__(self):
-        self.transaction = FakeTransaction()
+    def __init__(self, rejected_type=None):
+        self.transaction = FakeTransaction(rejected_type)
 
     def __enter__(self):
         return self
@@ -31,8 +37,8 @@ class FakeSession:
 
 
 class FakeDriver:
-    def __init__(self):
-        self.session_instance = FakeSession()
+    def __init__(self, rejected_type=None):
+        self.session_instance = FakeSession(rejected_type)
 
     def session(self):
         return self.session_instance
@@ -49,11 +55,16 @@ def test_rebuild_deletes_then_writes_nodes_and_relationships():
 
     calls = driver.session_instance.transaction.calls
     assert "DETACH DELETE" in calls[0][0]
-    assert "MERGE (entity:Entity" in calls[1][0]
-    assert "SET entity:$(node.type)" in calls[1][0]
+    assert "MERGE (entity:$($semantic_type)" in calls[1][0]
+    assert ":Entity" not in calls[1][0]
+    assert calls[1][1]["semantic_type"] == "Function"
     assert calls[1][1]["nodes"][0]["source_id"] == "a"
-    assert "MERGE (source)-[edge:$(relationship.type)" in calls[2][0]
-    assert calls[2][1]["relationships"][0]["type"] == "CALLS"
+    assert calls[2][1]["semantic_type"] == "Method"
+    assert "MATCH (source {source_id:" in calls[3][0]
+    assert "MATCH (target {source_id:" in calls[3][0]
+    assert ":Entity" not in calls[3][0]
+    assert "MERGE (source)-[edge:$(relationship.type)" in calls[3][0]
+    assert calls[3][1]["relationships"][0]["type"] == "CALLS"
 
 
 def test_rebuild_passes_arbitrary_semantic_types_without_changing_them():
@@ -66,6 +77,7 @@ def test_rebuild_passes_arbitrary_semantic_types_without_changing_them():
     Neo4jWriter(driver).rebuild(document)
 
     calls = driver.session_instance.transaction.calls
+    assert calls[1][1]["semantic_type"] == "Domain Thing"
     assert calls[1][1]["nodes"] == [
         {
             "source_id": "a",
@@ -77,6 +89,9 @@ def test_rebuild_passes_arbitrary_semantic_types_without_changing_them():
             "end_column": None,
             "properties": {},
         },
+    ]
+    assert calls[2][1]["semantic_type"] == "Result/Value"
+    assert calls[2][1]["nodes"] == [
         {
             "source_id": "b",
             "type": "Result/Value",
@@ -88,7 +103,42 @@ def test_rebuild_passes_arbitrary_semantic_types_without_changing_them():
             "properties": {},
         },
     ]
-    assert calls[2][1]["relationships"] == [
+    assert calls[3][1]["relationships"] == [
         {"source_id": "a", "target_id": "b", "type": "READS-VALUE", "properties": {}}
     ]
-    assert "RELATES_TO" not in calls[2][0]
+    assert "RELATES_TO" not in calls[3][0]
+
+
+def test_rebuild_groups_nodes_by_type_deterministically():
+    driver = FakeDriver()
+    document = GraphDocument(
+        nodes=(
+            GraphNode("method-a", "Method"),
+            GraphNode("function", "Function"),
+            GraphNode("method-b", "Method"),
+        ),
+        relationships=(),
+    )
+
+    Neo4jWriter(driver).rebuild(document)
+
+    calls = driver.session_instance.transaction.calls
+    assert [call[1].get("semantic_type") for call in calls[1:3]] == ["Function", "Method"]
+    assert [node["source_id"] for node in calls[2][1]["nodes"]] == ["method-a", "method-b"]
+
+
+def test_rebuild_wraps_rejected_semantic_label_and_stops():
+    driver = FakeDriver(rejected_type="Rejected Type")
+    document = GraphDocument(
+        nodes=(GraphNode("a", "Accepted"), GraphNode("b", "Rejected Type")),
+        relationships=(GraphRelationship("a", "b", "CALLS"),),
+    )
+
+    with pytest.raises(Neo4jPersistenceError, match="Rejected Type") as captured:
+        Neo4jWriter(driver).rebuild(document)
+
+    assert captured.value.semantic_type == "Rejected Type"
+    assert isinstance(captured.value.__cause__, ClientError)
+    calls = driver.session_instance.transaction.calls
+    assert [call[1].get("semantic_type") for call in calls[1:]] == ["Accepted", "Rejected Type"]
+    assert all("relationships" not in call[1] for call in calls)

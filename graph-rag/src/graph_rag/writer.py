@@ -3,6 +3,7 @@
 from typing import Any, Mapping, Protocol
 
 from neo4j import Driver
+from neo4j.exceptions import ClientError
 
 from .contract import GraphDocument
 
@@ -10,6 +11,12 @@ from .contract import GraphDocument
 class GraphWriter(Protocol):
     def rebuild(self, document: GraphDocument) -> None:
         ...
+
+
+class Neo4jPersistenceError(RuntimeError):
+    def __init__(self, semantic_type: str):
+        self.semantic_type = semantic_type
+        super().__init__("Neo4j rejected semantic node type %r as a label" % semantic_type)
 
 
 class Neo4jWriter:
@@ -24,26 +31,35 @@ class Neo4jWriter:
     @staticmethod
     def _rebuild_transaction(transaction: Any, document: GraphDocument) -> None:
         transaction.run("MATCH (entity) DETACH DELETE entity").consume()
-        transaction.run(
-            """
-            UNWIND $nodes AS node
-            MERGE (entity:Entity {source_id: node.source_id})
-            SET entity:$(node.type),
-                entity.type = node.type,
-                entity.source_uri = node.source_uri,
-                entity.start_line = node.start_line,
-                entity.start_column = node.start_column,
-                entity.end_line = node.end_line,
-                entity.end_column = node.end_column,
-                entity += node.properties
-            """,
-            nodes=[_node_parameters(node) for node in document.nodes],
-        ).consume()
+        nodes_by_type = {}
+        for node in document.nodes:
+            nodes_by_type.setdefault(node.type, []).append(_node_parameters(node))
+
+        for semantic_type in sorted(nodes_by_type):
+            try:
+                transaction.run(
+                    """
+                    UNWIND $nodes AS node
+                    MERGE (entity:$($semantic_type) {source_id: node.source_id})
+                    SET entity += node.properties
+                    SET entity.type = node.type,
+                        entity.source_uri = node.source_uri,
+                        entity.start_line = node.start_line,
+                        entity.start_column = node.start_column,
+                        entity.end_line = node.end_line,
+                        entity.end_column = node.end_column
+                    """,
+                    semantic_type=semantic_type,
+                    nodes=nodes_by_type[semantic_type],
+                ).consume()
+            except ClientError as error:
+                raise Neo4jPersistenceError(semantic_type) from error
+
         transaction.run(
             """
             UNWIND $relationships AS relationship
-            MATCH (source:Entity {source_id: relationship.source_id})
-            MATCH (target:Entity {source_id: relationship.target_id})
+            MATCH (source {source_id: relationship.source_id})
+            MATCH (target {source_id: relationship.target_id})
             MERGE (source)-[edge:$(relationship.type) {type: relationship.type}]->(target)
             SET edge += relationship.properties
             """,

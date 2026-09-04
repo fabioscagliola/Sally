@@ -25,8 +25,12 @@ def neo4j_driver():
 
 def test_write_and_rebuild_are_deterministic(neo4j_driver):
     document = GraphDocument(
-        nodes=(GraphNode("a", "Function"), GraphNode("b", "Method")),
-        relationships=(GraphRelationship("a", "b", "CALLS"),),
+        nodes=(
+            GraphNode("a", "Function", properties={"name": "caller", "type": "custom override"}),
+            GraphNode("b", "Method", properties={"name": "target"}),
+            GraphNode("c", "Domain Thing", properties={"name": "generic"}),
+        ),
+        relationships=(GraphRelationship("a", "b", "CALLS", properties={"count": 2}),),
     )
     writer = Neo4jWriter(neo4j_driver)
 
@@ -34,14 +38,30 @@ def test_write_and_rebuild_are_deterministic(neo4j_driver):
     writer.rebuild(document)
 
     with neo4j_driver.session() as session:
-        assert session.run("MATCH (entity:Entity) RETURN count(entity) AS count").single()["count"] == 2
-        assert session.run("MATCH (entity:Entity:Function) RETURN count(entity) AS count").single()["count"] == 1
-        assert session.run("MATCH (entity:Entity:Method) RETURN count(entity) AS count").single()["count"] == 1
+        nodes = session.run(
+            "MATCH (entity) "
+            "RETURN entity.source_id AS source_id, labels(entity) AS labels, "
+            "entity.type AS type, entity.name AS name "
+            "ORDER BY source_id"
+        ).data()
+        assert nodes == [
+            {"source_id": "a", "labels": ["Function"], "type": "Function", "name": "caller"},
+            {"source_id": "b", "labels": ["Method"], "type": "Method", "name": "target"},
+            {"source_id": "c", "labels": ["Domain Thing"], "type": "Domain Thing", "name": "generic"},
+        ]
+        assert session.run("MATCH (entity:Entity) RETURN count(entity) AS count").single()["count"] == 0
+        assert session.run("MATCH (entity:GraphNode) RETURN count(entity) AS count").single()["count"] == 0
         assert session.run("MATCH ()-[edge:CALLS]->() RETURN count(edge) AS count").single()["count"] == 1
         assert session.run("MATCH ()-[edge:RELATES_TO]->() RETURN count(edge) AS count").single()["count"] == 0
-        assert session.run("MATCH ()-[edge:CALLS {type: 'CALLS'}]->() RETURN count(edge) AS count").single()["count"] == 1
+        edge = session.run(
+            "MATCH ()-[edge:CALLS]->() RETURN edge.type AS type, edge.count AS count"
+        ).single()
+        assert dict(edge) == {"type": "CALLS", "count": 2}
 
         stale = GraphDocument((GraphNode("stale", "File"),), ())
         writer.rebuild(stale)
-        assert session.run("MATCH (entity:Entity) RETURN collect(entity.source_id) AS ids").single()["ids"] == ["stale"]
-        assert session.run("MATCH (entity:Entity:File) RETURN count(entity) AS count").single()["count"] == 1
+        rebuilt = session.run(
+            "MATCH (entity) RETURN entity.source_id AS source_id, labels(entity) AS labels, entity.type AS type"
+        ).single()
+        assert dict(rebuilt) == {"source_id": "stale", "labels": ["File"], "type": "File"}
+        assert session.run("MATCH ()-[edge]->() RETURN count(edge) AS count").single()["count"] == 0
