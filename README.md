@@ -2,7 +2,7 @@
 
 # Sally
 
-Human-driven AI-augmented SDLC
+Human-driven AI-augmented SDLC powered by Graph RAG
 
 ## What is Sally
 
@@ -56,14 +56,27 @@ That is the spirit guiding this project. Leverage AI, but always keep human hand
 
 ## Lifecycle
 
-Sally supports the journey from backlog item to pull request through a lifecycle with three AI-augmented stages.
+Sally supports the journey from backlog item to pull request through a lifecycle with three AI-augmented stages. See [Lifecycle](docs/lifecycle.md) for more info.
 
 ![Lifecycle](/assets/lifecycle.jpg)
 
-See [Lifecycle](docs/lifecycle.md) for more info.
+## Graph RAG
+
+Sally uses Graph RAG to give agents structured knowledge about the target project without requiring them to repeatedly search the codebase.
+
+Language-specific ingestion pipelines analyze the source project and produce a common, technology-independent graph representation.
+
+The current .NET ingestion pipeline uses Roslyn to analyze C# projects and solutions. TypeScript and Markdown ingestion pipelines will follow.
+
+The resulting graph is serialized as JSON and ingested into Neo4j.
+
+The source project remains the source of truth. The Neo4j graph is disposable derived data and is rebuilt from scratch when the project is ingested again.
+
+![Graph](/assets/graph.png)
 
 ## Documentation
 
 - [GitHub quickstart guide](docs/github-quickstart-guide.md)
 - [Sally Graph RAG](graph-rag/README.md)
+- [.NET ingestion](graph-rag/ingestion/dotnet/README.md)
 

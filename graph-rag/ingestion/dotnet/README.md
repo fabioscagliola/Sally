@@ -14,9 +14,10 @@ And run the application.
 
 ```
 docker run --rm \
-  -v /example:/source \
+  -v /path/to/repository:/source \
   -v "$PWD":/target \
   ingest-dotnet \
   /source/example.csproj \
   /target/example.json
 ```
+
