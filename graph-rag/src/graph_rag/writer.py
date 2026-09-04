@@ -1,6 +1,6 @@
 """Neo4j persistence behind the neutral graph boundary."""
 
-from typing import Any, Callable, Mapping, Protocol
+from typing import Any, Mapping, Protocol
 
 from neo4j import Driver
 
@@ -28,7 +28,8 @@ class Neo4jWriter:
             """
             UNWIND $nodes AS node
             MERGE (entity:Entity {source_id: node.source_id})
-            SET entity.type = node.type,
+            SET entity:$(node.type),
+                entity.type = node.type,
                 entity.source_uri = node.source_uri,
                 entity.start_line = node.start_line,
                 entity.start_column = node.start_column,
@@ -43,7 +44,7 @@ class Neo4jWriter:
             UNWIND $relationships AS relationship
             MATCH (source:Entity {source_id: relationship.source_id})
             MATCH (target:Entity {source_id: relationship.target_id})
-            MERGE (source)-[edge:RELATES_TO {type: relationship.type}]->(target)
+            MERGE (source)-[edge:$(relationship.type) {type: relationship.type}]->(target)
             SET edge += relationship.properties
             """,
             relationships=[
