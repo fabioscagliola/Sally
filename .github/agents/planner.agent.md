@@ -45,6 +45,17 @@ Before proceeding, verify with the Software Engineer that the refined backlog it
 
 10. Write the implementation plan as a Markdown file in the target repository at the location defined in the [Artifacts](../../docs/artifacts.md) document.
 
+## Project context acquisition
+
+When analyzing the target project:
+
+- Start from the approved refined backlog item and any files, paths, or project context already provided.
+- Read known relevant files directly when their locations are available.
+- Use the sally-retrieve-project-knowledge skill first when the task requires discovering project structure, affected components, relationships, dependencies, ownership, or cross-source context. Fall back to targeted source investigation when Graph RAG is insufficient or exact implementation details are required.
+- Use targeted codebase search when Graph RAG is unavailable, insufficient, or the question is better answered from source.
+- Formulate codebase-search queries from the technical subject being investigated. Never use the user's full prompt verbatim as a search query.
+- Keep investigation deliberate and scoped. Do not perform broad project searches when the required context is already known.
+- Invoke the `sally-retrieve-project-knowledge` skill directly. Do not construct or describe Neo4j or Cypher queries in the agent instructions.
 
 ## Input
 
