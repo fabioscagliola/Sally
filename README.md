@@ -82,4 +82,14 @@ The source project remains the source of truth. The Neo4j graph is disposable de
 - [Sally Graph RAG](graph-rag/README.md)
 - [.NET ingestion](graph-rag/ingestion/dotnet/README.md)
 - [GitHub quickstart guide](docs/github-quickstart-guide.md)
+- [Architecture decision records](/docs/adr/README.md)
+
+## Roadmap
+
+Sally's evolutionary steps.
+
+- Add TypeScript ingestion using the TypeScript compiler API (and neutralize the serialized Graph RAG format identifier).
+- Add Markdown ingestion for ADRs and other project documentation.
+- Connect knowledge across sources in the unified graph.
+- Evolve Graph RAG from local access to a centralized service/API.
 
