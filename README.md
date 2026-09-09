@@ -10,29 +10,29 @@ Sally is an AI-augmented software delivery lifecycle that helps teams move from 
 
 ## Where Sally came from
 
-The ideas behind Sally came from a large enterprise software project I came to lead earlier this year, with forty developers working on a huge, ten-year-old codebase.
+The ideas behind Sally came from working with a large software delivery team on a complex codebase.
 
-The documentation was obsolete. Those who had designed the original architecture had left the team or the company. No one knew the whole system anymore. The only reliable source of truth was the code itself.
+The documentation was outdated. Much of the original architectural knowledge had disappeared over time. No one had a complete picture of the system anymore. The only reliable source of truth was the code itself.
 
-At the same time, development was moving fast and under considerable pressure. Business Analysts were adding backlog items faster than developers could implement them.
+At the same time, development was moving fast and under considerable pressure. New work was entering the backlog faster than the team could implement it.
 
 Release scopes were being planned while requirements were still unclear and effort had not yet been estimated, but that is another story.
 
-Someone came up with an apparently obvious solution. Add more developers and give them AI. Needless to say, that did not solve the problem.
+An apparently obvious solution was to add more developers and give them AI. Needless to say, that did not solve the problem.
 
 New joiners struggled to understand the system.
 
-Veterans became even more valuable, and an even greater bottleneck, because everyone depended on their knowledge.
+Project veterans became even more valuable, and an even greater bottleneck, because everyone depended on their knowledge.
 
-And Business Analysts continued filling the backlog. They were under pressure too, being responsible for UAT as well. Some were also new to the project. As a result, many backlog items contained barely enough information for veterans and nowhere near enough for new joiners.
+The backlog kept growing. Requirements were often good enough for people who already knew the system, but nowhere near enough for someone seeing it for the first time.
 
-Developers were already using AI, but for code generation only and in very different ways.
+Developers were already using AI, although for code generation only and in very different ways.
 
-This is the environment in which I introduced an approach similar to Sally.
+This is where I introduced an approach similar to Sally.
 
-Then another problem appeared. Around that time, AI coding tools were changing their pricing models, and using the new lifecycle suddenly became much more expensive. One of the main reasons was context. Agents had to repeatedly search the huge codebase to understand how things worked and where changes belonged.
+Then another problem appeared. AI coding tools were becoming more expensive to use at scale, and one of the main reasons was context. Agents had to repeatedly search a huge codebase to understand how things worked and where changes belonged.
 
-That is what led me to introduce Graph RAG. The idea was to build a searchable representation of the codebase and its relationships and make that knowledge available to agents to avoid having them repeatedly search the codebase.
+That is what led me to Graph RAG. The idea was to build a searchable representation of the codebase and its relationships and make that knowledge available to agents, instead of having them repeatedly rediscover the same context.
 
 ## Why “Sally”
 
