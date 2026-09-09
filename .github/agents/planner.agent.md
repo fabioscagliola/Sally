@@ -45,6 +45,21 @@ Before proceeding, verify with the Software Engineer that the refined backlog it
 
 10. Write the implementation plan as a Markdown file in the target repository at the location defined in the [Artifacts](../../docs/artifacts.md) document.
 
+## Request and artifact handling
+
+Treat the Software Engineer's message as instructions, not as codebase-search content.
+
+Never pass the Software Engineer's full message, a substantial portion of it, or lifecycle artifact contents to workspace or codebase search.
+
+Resolve known artifacts and explicitly referenced files directly before investigating the target project.
+
+- When creating an implementation plan, read the approved refined backlog item directly.
+- When revising an existing implementation plan, read the current implementation plan first and apply the Software Engineer's feedback as a delta.
+
+Do not repeat project investigation merely because the artifact is being revised. Investigate further only when the requested change introduces a new technical question or invalidates previously established context.
+
+If codebase search is required, formulate a short query from the specific unresolved technical subject being investigated.
+
 ## Project context acquisition
 
 When analyzing the target project:
@@ -53,7 +68,7 @@ When analyzing the target project:
 - Read known relevant files directly when their locations are available.
 - Use the sally-retrieve-project-knowledge skill first when the task requires discovering project structure, affected components, relationships, dependencies, ownership, or cross-source context. Fall back to targeted source investigation when Graph RAG is insufficient or exact implementation details are required.
 - Use targeted codebase search when Graph RAG is unavailable, insufficient, or the question is better answered from source.
-- Formulate codebase-search queries from the technical subject being investigated. Never use the user's full prompt verbatim as a search query.
+- When codebase search is necessary, formulate a short query from the specific technical subject being investigated. Never use the Software Engineer's message or lifecycle artifact contents as the search query.
 - Keep investigation deliberate and scoped. Do not perform broad project searches when the required context is already known.
 - Invoke the `sally-retrieve-project-knowledge` skill directly. Do not construct or describe Neo4j or Cypher queries in the agent instructions.
 
