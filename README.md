@@ -88,7 +88,7 @@ The source project remains the source of truth. The Neo4j graph is disposable de
 
 Sally's evolutionary steps.
 
-- Add TypeScript ingestion using the TypeScript compiler API (and neutralize the serialized Graph RAG format identifier).
+- Neutralize the serialized Graph RAG format identifier.
 - Add Markdown ingestion for ADRs and other project documentation.
 - Connect knowledge across sources in the unified graph.
 - Evolve Graph RAG from local access to a centralized service/API.
